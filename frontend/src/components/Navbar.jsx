@@ -16,6 +16,7 @@ const Navbar = () => {
       <div className="flex items-center">
         {user ? (
           <>
+            <Link to="/browse-tutors" className="mr-4">Browse Tutors</Link>
             <Link to="/my-account" className="mr-4">My Account</Link>
             {user.role === 'tutor' && (
             <Link to="/tutor-profile" className="mr-4">Tutor Profile</Link>

@@ -69,14 +69,20 @@ const Home = () => {
             {/* Student-specific section */}
             {user?.role === 'student' && (
                 <section className="max-w-2xl mx-auto mt-8 p-6 bg-green-50 rounded-lg shadow">
-                    <h2 className="text-2xl font-bold mb-3">
-                        Find a Tutor
-                    </h2>
+                    <h2 className="text-2xl font-bold mb-3">Find a Tutor</h2>
 
-                    <p className="text-gray-600">
-                        Welcome! You can use Tutor Booking to connect
-                        with tutors and find academic support.
+                    <p className="text-gray-600 mb-4">
+                        Browse available tutors, explore the subjects they teach
+                        and compare their hourly rates to find the right tutor
+                        for your academic needs.
                     </p>
+
+                    <Link
+                        to="/browse-tutors"
+                        className="inline-block bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
+                    >
+                        Browse Tutors
+                    </Link>
                 </section>
             )}
 

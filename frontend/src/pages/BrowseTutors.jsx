@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import TutorCard from '../components/TutorCard';
 
 const BrowseTutors = () => {
     const { user } = useAuth();
@@ -57,31 +58,10 @@ const BrowseTutors = () => {
             {tutors.length === 0 ? (
                 <p>No tutor profiles are currently available.</p>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {tutors.map((tutor) => (
-                        <div
-                            key={tutor._id}
-                            className="border rounded-lg p-5 shadow"
-                        >
-                            <h2 className="text-xl font-bold mb-2">
-                                {tutor.tutor?.name}
-                            </h2>
-
-                            <p className="text-gray-600 mb-3">
-                                {tutor.description}
-                            </p>
-
-                            <p className="mb-2">
-                                <strong>Subjects:</strong>{' '}
-                                {tutor.subjects.join(', ')}
-                            </p>
-
-                            <p>
-                                <strong>Hourly Rate:</strong> $
-                                {tutor.hourlyRate.toFixed(2)} / hour
-                            </p>
-                        </div>
-                    ))}
+                        <TutorCard key={tutor._id} tutor={tutor} />
+                    ))}     
                 </div>
             )}
         </div>
