@@ -11,13 +11,16 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
-      <Link to="/" className="text-2xl font-bold">Task Manager</Link>
+    <nav className="bg-teal-600 text-white p-4 flex justify-between items-center">
+      <Link to="/" className="text-2xl font-bold">TutorLink</Link>
       <div className="flex items-center">
         {user ? (
           <>
             <Link to="/tasks" className="mr-4">Tasks</Link>
-            <Link to="/profile" className="mr-4">Profile</Link>
+            <Link to="/my-account" className="mr-4">My Account</Link>
+            {user.role === 'tutor' && (
+            <Link to="/tutor-profile" className="mr-4">Tutor Profile</Link>
+            )}
         {/* User role badge */}
         <span className={`mr-4 px-3 py-2 rounded-full text-sm font-bold ${
           user.role === 'student'
