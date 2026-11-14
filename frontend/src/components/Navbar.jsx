@@ -17,6 +17,7 @@ const Navbar = () => {
         {user ? (
           <>
             <Link to="/tasks" className="mr-4">Tasks</Link>
+            <Link to="/my-account" className="mr-4">My Account</Link>
             <Link to="/profile" className="mr-4">Profile</Link>
         {/* User role badge */}
         <span className={`mr-4 px-3 py-2 rounded-full text-sm font-bold ${
