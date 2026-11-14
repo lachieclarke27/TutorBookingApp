@@ -13,11 +13,20 @@ const Navbar = () => {
   return (
     <nav className="bg-blue-600 text-white p-4 flex justify-between items-center">
       <Link to="/" className="text-2xl font-bold">Task Manager</Link>
-      <div>
+      <div className="flex items-center">
         {user ? (
           <>
             <Link to="/tasks" className="mr-4">Tasks</Link>
-            <Link to="/my-account" className="mr-4">My Account</Link>
+            <Link to="/profile" className="mr-4">Profile</Link>
+        {/* User role badge */}
+        <span className={`mr-4 px-3 py-2 rounded-full text-sm font-bold ${
+          user.role === 'student'
+            ? 'bg-green-500 text-white'
+            : 'bg-purple-500 text-white'
+            }`}>
+          {user.role?.toUpperCase()}
+        </span>
+
             <button
               onClick={handleLogout}
               className="bg-red-500 px-4 py-2 rounded hover:bg-red-700"
