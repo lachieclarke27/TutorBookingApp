@@ -19,7 +19,10 @@ const TutorProfile = () => {
     useEffect(() => {
         const fetchTutorProfile = async () => {
             try {
-                const response = await axiosInstance.get('/api/tutor-profile');
+                const response = 
+                await axiosInstance.get('/api/tutor-profile', {
+                headers: { Authorization: `Bearer ${user.token}` },
+                });
 
                 const profile = response.data.tutorProfile;
 
@@ -72,10 +75,14 @@ const TutorProfile = () => {
 
         try {
             if (profileExists) {
-                await axiosInstance.put('/api/tutor-profile', profileData);
+                await axiosInstance.put('/api/tutor-profile', profileData, {
+                headers: { Authorization: `Bearer ${user.token}` },
+                });
                 setMessage('Tutor profile updated successfully!');
             } else {
-                await axiosInstance.post('/api/tutor-profile', profileData);
+                await axiosInstance.post('/api/tutor-profile', profileData,{
+                headers: { Authorization: `Bearer ${user.token}` },
+                });
                 setProfileExists(true);
                 setMessage('Tutor profile created successfully!');
             }

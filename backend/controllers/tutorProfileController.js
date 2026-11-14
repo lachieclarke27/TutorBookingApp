@@ -18,7 +18,7 @@ const createTutorProfile = async (req, res) => {
             });
         }
 
-        // Does the tutor already have a profile
+        // Does the tutor already ha a profile
         const existingProfile = await TutorProfile.findOne({
             tutor: user._id
         });

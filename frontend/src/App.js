@@ -4,7 +4,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import MyAccount from './pages/my-account';
 import Tasks from './pages/Tasks';
-import TutorProfile from './pages//TutorProfile';
+import TutorProfile from './pages/TutorProfile';
+import Home from './pages/Home';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/my-account" element={<MyAccount />} />
         <Route path="/tasks" element={<Tasks />} />
         <Route path="/tutor-profile" element={<TutorProfile/>} />
+        <Route path="/" element={<Home/>} />
       </Routes>
     </Router>
   );
