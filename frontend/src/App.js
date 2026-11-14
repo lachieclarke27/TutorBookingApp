@@ -6,6 +6,7 @@ import MyAccount from './pages/my-account';
 import Tasks from './pages/Tasks';
 import TutorProfile from './pages/TutorProfile';
 import Home from './pages/Home';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
@@ -16,7 +17,11 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/my-account" element={<MyAccount />} />
         <Route path="/tasks" element={<Tasks />} />
-        <Route path="/tutor-profile" element={<TutorProfile/>} />
+        <Route path="/tutor-profile" element={
+          <ProtectedRoute requiredRole="tutor">
+            <TutorProfile />
+        </ProtectedRoute>
+          } />
         <Route path="/" element={<Home/>} />
       </Routes>
     </Router>
