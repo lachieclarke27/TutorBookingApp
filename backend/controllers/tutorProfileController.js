@@ -155,9 +155,23 @@ const updateTutorProfile = async (req, res) => {
     }
 };
 
+// Function to get all tutor profiles
+const getAllTutorProfiles = async (req, res) => {
+    try {
+        //Retrieve all profiles and populate with the tutor details
+        const tutorProfiles = await TutorProfile.find().populate('tutor', 'name');
+        res.status(200).json({count: tutorProfiles.length, tutorProfiles
+        });
+    } 
+    catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+};
+
 
 module.exports = {
     createTutorProfile,
     getTutorProfile,
-    updateTutorProfile
+    updateTutorProfile,
+    getAllTutorProfiles
 };
