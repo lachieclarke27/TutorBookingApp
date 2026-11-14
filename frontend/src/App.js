@@ -6,6 +6,7 @@ import MyAccount from './pages/my-account';
 import TutorProfile from './pages/TutorProfile';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
+import BrowseTutors from './pages/BrowseTutors';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         </ProtectedRoute>
           } />
         <Route path="/" element={<Home/>} />
+        <Route path="/browse-tutors" element={<BrowseTutors/>} />
       </Routes>
     </Router>
   );
