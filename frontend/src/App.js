@@ -7,6 +7,7 @@ import TutorProfile from './pages/TutorProfile';
 import Home from './pages/Home';
 import ProtectedRoute from './components/ProtectedRoute';
 import BrowseTutors from './pages/BrowseTutors';
+import TutorAvailability from './pages/TutorAvailability';
 
 function App() {
   return (
@@ -20,7 +21,12 @@ function App() {
           <ProtectedRoute requiredRole="tutor">
             <TutorProfile />
         </ProtectedRoute>
-          } />
+        } />
+        <Route path="/tutor-availability"element={
+        <ProtectedRoute requiredRole="tutor">
+            <TutorAvailability />
+        </ProtectedRoute>
+        } />
         <Route path="/" element={<Home/>} />
         <Route path="/browse-tutors" element={<BrowseTutors/>} />
       </Routes>

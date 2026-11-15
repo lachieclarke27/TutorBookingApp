@@ -45,26 +45,46 @@ const Home = () => {
             )}
 
             {/* Tutor-specific section */}
-            {user?.role === 'tutor' && (
-                <section className="max-w-2xl mx-auto mt-8 p-6 bg-blue-50 rounded-lg shadow">
-                    <h2 className="text-2xl font-bold mb-3">
-                        Your Tutor Profile
-                    </h2>
+{user?.role === 'tutor' && (
+    <>
+        <section className="max-w-2xl mx-auto mt-8 p-6 bg-blue-50 rounded-lg shadow">
+            <h2 className="text-2xl font-bold mb-3">
+                Your Tutor Profile
+            </h2>
 
-                    <p className="text-gray-600 mb-4">
-                        Create or update your tutor profile so students
-                        can learn more about you, the subjects you teach,
-                        and your hourly rate.
-                    </p>
+            <p className="text-gray-600 mb-4">
+                Create or update your tutor profile so students
+                can learn more about you, the subjects you teach,
+                and your hourly rate.
+            </p>
 
-                    <Link
-                        to="/tutor-profile"
-                        className="inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
-                    >
-                        Manage Tutor Profile
-                    </Link>
-                </section>
-            )}
+            <Link
+                to="/tutor-profile"
+                className="inline-block bg-blue-600 text-white px-5 py-2 rounded hover:bg-blue-700"
+            >
+                Manage Tutor Profile
+            </Link>
+        </section>
+
+        <section className="max-w-2xl mx-auto mt-8 p-6 bg-purple-50 rounded-lg shadow">
+            <h2 className="text-2xl font-bold mb-3">
+                Your Availability
+            </h2>
+
+            <p className="text-gray-600 mb-4">
+                Add and manage your available dates and times
+                so students can see when you're available for tutoring.
+            </p>
+
+            <Link
+                to="/tutor-availability"
+                className="inline-block bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700"
+            >
+                Manage Availability
+            </Link>
+        </section>
+    </>
+)}
 
             {/* Student-specific section */}
             {user?.role === 'student' && (
