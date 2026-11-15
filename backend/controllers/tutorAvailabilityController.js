@@ -20,7 +20,61 @@ const createAvailability = async (req, res) => {
             });
         }
 
-        // Create availability associated with logged-in tutor
+        // Validate date format and actual calendar date
+        const dateParts = date.split('-');
+
+        if (
+            !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+            dateParts.length !== 3 ||
+            new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date
+        ) {
+            return res.status(400).json({
+                message: 'Please provide a valid date'
+            });
+        }
+
+        // Prevent availability dates in the past
+        const today = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Australia/Brisbane'
+        }).format(new Date());
+
+        if (date < today) {
+            return res.status(400).json({
+                message: 'Availability date cannot be in the past'
+            });
+        }
+
+        // Validate time format
+        const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+        if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+            return res.status(400).json({
+                message: 'Please provide valid start and end times'
+            });
+        }
+
+        // Ensure end time is later than start time
+        if (endTime <= startTime) {
+            return res.status(400).json({
+                message: 'End time must be later than start time'
+            });
+        }
+
+        // Check for overlapping availability
+        const conflictingAvailability = await TutorAvailability.findOne({
+            tutor: req.user._id,
+            date,
+            startTime: { $lt: endTime },
+            endTime: { $gt: startTime }
+        });
+
+        if (conflictingAvailability) {
+            return res.status(400).json({
+                message: 'This availability overlaps with an existing slot'
+            });
+        }
+
+        // Create availability
         const availability = await TutorAvailability.create({
             tutor: req.user._id,
             date,

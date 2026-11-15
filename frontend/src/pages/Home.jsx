@@ -45,8 +45,8 @@ const Home = () => {
             )}
 
             {/* Tutor-specific section */}
-{user?.role === 'tutor' && (
-    <>
+        {user?.role === 'tutor' && (
+        <>
         <section className="max-w-2xl mx-auto mt-8 p-6 bg-blue-50 rounded-lg shadow">
             <h2 className="text-2xl font-bold mb-3">
                 Your Tutor Profile
@@ -83,8 +83,8 @@ const Home = () => {
                 Manage Availability
             </Link>
         </section>
-    </>
-)}
+        </>
+        )}
 
             {/* Student-specific section */}
             {user?.role === 'student' && (
