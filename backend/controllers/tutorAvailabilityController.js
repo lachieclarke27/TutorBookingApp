@@ -141,8 +141,9 @@ const getTutorAvailability = async (req, res) => {
         // Find all booked availability IDs
         const bookings = await Booking.find({
             availability: {
-                $in: availability.map(slot => slot._id)
-            }
+            $in: availability.map(slot => slot._id)
+            },
+            status: { $in: ['pending', 'confirmed'] }
         }).select('availability');
 
         const bookedIds = bookings.map(booking =>

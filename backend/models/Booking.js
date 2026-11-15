@@ -15,7 +15,6 @@ availability: {
 type: mongoose.Schema.Types.ObjectId,
 ref: 'TutorAvailability',
 required: true,
-unique: true
 },
 status: {
 type: String,

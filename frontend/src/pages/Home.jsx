@@ -88,7 +88,7 @@ const Home = () => {
 
             {/* Student-specific section */}
             {user?.role === 'student' && (
-                <section className="max-w-2xl mx-auto mt-8 p-6 bg-green-50 rounded-lg shadow">
+                <section className="max-w-2xl mx-auto mt-8 p-6 bg-purple-50 rounded-lg shadow">
                     <h2 className="text-2xl font-bold mb-3">Find a Tutor</h2>
 
                     <p className="text-gray-600 mb-4">
@@ -99,7 +99,7 @@ const Home = () => {
 
                     <Link
                         to="/browse-tutors"
-                        className="inline-block bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700"
+                        className="inline-block bg-purple-600 text-white px-5 py-2 rounded hover:bg-purple-700"
                     >
                         Browse Tutors
                     </Link>

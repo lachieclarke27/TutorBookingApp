@@ -16,14 +16,21 @@ const Navbar = () => {
       <div className="flex items-center">
         {user ? (
           <>
-            <Link to="/browse-tutors" className="mr-4">Browse Tutors</Link>
-            <Link to="/my-account" className="mr-4">My Account</Link>
+            <Link to="/browse-tutors" className="mr-4 bg-purple-700 px-3 py-2 rounded hover:bg-purple-500">Browse Tutors</Link>
+            {/* Links specific for Students */}
+            {user.role === 'student' && (
+            <Link to="/my-bookings" className="mr-4">
+                My Bookings
+            </Link>
+            )}
+            {/* Links specific for Tutors */}
             {user.role === 'tutor' && (
               <>
             <Link to="/tutor-availability" classname="mr-4">Manage Availability</Link>
             <Link to="/tutor-profile" className="mr-4">Tutor Profile</Link>
             </>
             )}
+            <Link to="/my-account" className="mr-4">My Account</Link>
         {/* User role badge */}
         <span className={`mr-4 px-3 py-2 rounded-full text-sm font-bold ${
           user.role === 'student'

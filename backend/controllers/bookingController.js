@@ -71,7 +71,8 @@ const createBooking = async (req, res) => {
 
         // Check whether the slot has already been booked
         const existingBooking = await Booking.findOne({
-            availability: availabilityId
+            availability: availabilityId,
+            status: { $in: ['pending', 'confirmed'] }
         });
 
         if (existingBooking) {
@@ -106,6 +107,106 @@ const createBooking = async (req, res) => {
     }
 };
 
+// Get all bookings belonging to the logged-in student
+const getMyBookings = async (req, res) => {
+    try {
+        // Only students can retrieve their bookings
+        if (req.user.role !== 'student') {
+            return res.status(403).json({
+                message: 'Only students can view their bookings'
+            });
+        }
+
+        const bookings = await Booking.find({
+            student: req.user._id
+        })
+            .populate('tutor', 'name')
+            .populate('availability', 'date startTime endTime')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            count: bookings.length,
+            bookings
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+// Cancel a booking
+const cancelBooking = async (req, res) => {
+    try {
+        // Only students can cancel bookings
+        if (req.user.role !== 'student') {
+            return res.status(403).json({
+                message: 'Only students can cancel bookings'
+            });
+        }
+
+        const { bookingId } = req.params;
+
+        // Find booking belonging to the logged-in student
+        const booking = await Booking.findOne({
+            _id: bookingId,
+            student: req.user._id
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                message: 'Booking not found'
+            });
+        }
+
+        // Prevent cancelling an already cancelled booking
+        if (!['pending', 'confirmed'].includes(booking.status)) {
+            return res.status(400).json({
+                message: 'This booking cannot be cancelled'
+            });
+        }
+
+        // Prevent cancelling past bookings
+        const availability = await TutorAvailability.findById(
+            booking.availability
+        );
+
+        if (!availability) {
+            return res.status(404).json({
+                message: 'Booking availability not found'
+            });
+        }
+
+        const today = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Australia/Brisbane'
+        }).format(new Date());
+
+        if (availability.date < today) {
+            return res.status(400).json({
+                message: 'Cannot cancel a past booking'
+            });
+        }
+
+        // Update booking status
+        booking.status = 'cancelled';
+
+        await booking.save();
+
+        res.status(200).json({
+            message: 'Booking cancelled successfully',
+            booking
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
-createBooking
+createBooking,
+getMyBookings,
+cancelBooking
 };
