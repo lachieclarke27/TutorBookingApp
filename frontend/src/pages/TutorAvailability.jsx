@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react';
 import axiosInstance from '../axiosConfig';
 import { useAuth } from '../context/AuthContext';
 
-const TutorAvailability = () => {
+    const TutorAvailability = () => {
     const { user } = useAuth();
 
     const [availability, setAvailability] = useState([]);
+    const [bookings, setBookings] = useState([]);
+    const [bookingsLoading, setBookingsLoading] = useState(true);
+    const [bookingError, setBookingError] = useState('');
 
     // New availability form
     const [date, setDate] = useState('');
@@ -44,12 +47,110 @@ const TutorAvailability = () => {
         }
     };
 
+    // Retrieve tutor bookings
+    const fetchBookings = async () => {
+        try {
+            const response = await axiosInstance.get(
+                '/api/bookings/tutor-bookings',
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`
+                    }
+                }
+            );
+
+            setBookings(response.data.bookings);
+
+        } catch (error) {
+            setBookingError(
+                error.response?.data?.message ||
+                'Failed to retrieve bookings.'
+            );
+        } finally {
+            setBookingsLoading(false);
+        }
+    };
+
+// Approve a booking
+const handleApprove = async (bookingId) => {
+    setBookingError('');
+
+    try {
+        await axiosInstance.put(
+            `/api/bookings/${bookingId}/approve`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            }
+        );
+
+        // Update booking status locally
+        setBookings((previousBookings) =>
+            previousBookings.map((booking) =>
+                booking._id === bookingId
+                    ? { ...booking, status: 'confirmed' }
+                    : booking
+            )
+        );
+
+    } catch (error) {
+        setBookingError(
+            error.response?.data?.message ||
+            'Failed to approve booking.'
+        );
+    }
+};    
+
+// Decline a booking
+const handleDecline = async (bookingId) => {
+    const confirmed = window.confirm(
+        'Are you sure you want to decline this booking request?'
+    );
+
+    if (!confirmed) {
+        return;
+    }
+
+    setBookingError('');
+
+    try {
+        await axiosInstance.put(
+            `/api/bookings/${bookingId}/decline`,
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${user.token}`
+                }
+            }
+        );
+
+        // Update booking status locally
+        setBookings((previousBookings) =>
+            previousBookings.map((booking) =>
+                booking._id === bookingId
+                    ? { ...booking, status: 'declined' }
+                    : booking
+            )
+        );
+
+    } catch (error) {
+        setBookingError(
+            error.response?.data?.message ||
+            'Failed to decline booking.'
+        );
+    }
+};
+
     useEffect(() => {
         if (user?.token) {
             fetchAvailability();
+            fetchBookings();
         } else {
-            setError('You must be logged in to view availability.');
+            setError('You must be logged in.');
             setLoading(false);
+            setBookingsLoading(false);
         }
     }, [user]);
 
@@ -179,7 +280,91 @@ const TutorAvailability = () => {
 
     return (
         <div className="container mx-auto p-6">
+            {/* Incoming Bookings */}
+            <section className="mb-12">
 
+                <h1 className="text-3xl font-bold mb-6">
+                    Incoming Bookings
+                </h1>
+
+                {bookingError && (
+                    <p className="text-red-600 mb-4">
+                        {bookingError}
+                    </p>
+                )}
+
+                {bookingsLoading ? (
+                    <p>Loading bookings...</p>
+                ) : bookings.length === 0 ? (
+                    <p className="text-gray-600">
+                        You haven't received any booking requests yet.
+                    </p>
+                ) : (
+                    <div className="space-y-4">
+
+                        {bookings.map((booking) => (
+                            <div
+                                key={booking._id}
+                                className="border rounded-lg p-5 shadow"
+                            >
+
+                                <h2 className="text-xl font-bold mb-2">
+                                    {booking.student?.name}
+                                </h2>
+
+                                <p>
+                                    <strong>Date:</strong>{' '}
+                                    {booking.availability?.date}
+                                </p>
+
+                                <p>
+                                    <strong>Time:</strong>{' '}
+                                    {booking.availability?.startTime} –{' '}
+                                    {booking.availability?.endTime}
+                                </p>
+
+                                <p className="mt-2">
+                                    <strong>Status:</strong>{' '}
+                                    <span className={`font-semibold capitalize ${
+                                        booking.status === 'confirmed'
+                                            ? 'text-green-600'
+                                            : booking.status === 'pending'
+                                                ? 'text-yellow-600'
+                                                : booking.status === 'declined'
+                                                    ? 'text-red-600'
+                                                    : 'text-gray-500'
+                                    }`}>
+                                        {booking.status}
+                                    </span>
+                                </p>
+
+                                {booking.status === 'pending' && (
+                                    <div className="flex gap-3 mt-3">
+
+                                        <button
+                                            onClick={() => handleApprove(booking._id)}
+                                            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+                                        >
+                                            Approve
+                                        </button>
+
+                                        <button
+                                            onClick={() => handleDecline(booking._id)}
+                                            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                                        >
+                                            Decline
+                                        </button>
+
+                                    </div>
+                                )}
+
+                            </div>
+                        ))}
+
+                    </div>
+                )}
+            </section>
+            
             <h1 className="text-3xl font-bold mb-6">
                 Manage Your Availability
             </h1>

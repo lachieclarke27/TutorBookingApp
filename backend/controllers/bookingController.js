@@ -136,6 +136,131 @@ const getMyBookings = async (req, res) => {
     }
 };
 
+// Get all bookings belonging to the logged-in tutor
+const getTutorBookings = async (req, res) => {
+    try {
+        // Only tutors can retrieve their bookings
+        if (req.user.role !== 'tutor') {
+            return res.status(403).json({
+                message: 'Only tutors can view their bookings'
+            });
+        }
+
+        const bookings = await Booking.find({
+            tutor: req.user._id
+        })
+            .populate('student', 'name')
+            .populate('availability', 'date startTime endTime')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            count: bookings.length,
+            bookings
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+// Approve a booking
+const approveBooking = async (req, res) => {
+    try {
+        // Only tutors can approve bookings
+        if (req.user.role !== 'tutor') {
+            return res.status(403).json({
+                message: 'Only tutors can approve bookings'
+            });
+        }
+
+        const { bookingId } = req.params;
+
+        // Find booking belonging to the logged-in tutor
+        const booking = await Booking.findOne({
+            _id: bookingId,
+            tutor: req.user._id
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                message: 'Booking not found'
+            });
+        }
+
+        // Only pending bookings can be approved
+        if (booking.status !== 'pending') {
+            return res.status(400).json({
+                message: 'Only pending bookings can be approved'
+            });
+        }
+
+        // Update booking status
+        booking.status = 'confirmed';
+
+        await booking.save();
+
+        res.status(200).json({
+            message: 'Booking approved successfully',
+            booking
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
+// Decline a booking
+const declineBooking = async (req, res) => {
+    try {
+        // Only tutors can decline bookings
+        if (req.user.role !== 'tutor') {
+            return res.status(403).json({
+                message: 'Only tutors can decline bookings'
+            });
+        }
+
+        const { bookingId } = req.params;
+
+        // Find booking belonging to the logged-in tutor
+        const booking = await Booking.findOne({
+            _id: bookingId,
+            tutor: req.user._id
+        });
+
+        if (!booking) {
+            return res.status(404).json({
+                message: 'Booking not found'
+            });
+        }
+
+        // Only pending bookings can be declined
+        if (booking.status !== 'pending') {
+            return res.status(400).json({
+                message: 'Only pending bookings can be declined'
+            });
+        }
+
+        // Update booking status
+        booking.status = 'declined';
+
+        await booking.save();
+
+        res.status(200).json({
+            message: 'Booking declined successfully',
+            booking
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 // Cancel a booking
 const cancelBooking = async (req, res) => {
     try {
@@ -208,5 +333,8 @@ const cancelBooking = async (req, res) => {
 module.exports = {
 createBooking,
 getMyBookings,
-cancelBooking
+cancelBooking,
+getTutorBookings, 
+approveBooking, 
+declineBooking
 };

@@ -26,7 +26,7 @@ const Navbar = () => {
             {/* Links specific for Tutors */}
             {user.role === 'tutor' && (
               <>
-            <Link to="/tutor-availability" classname="mr-4">Manage Availability</Link>
+            <Link to="/tutor-availability" className="mr-4">Bookings & Availability</Link>
             <Link to="/tutor-profile" className="mr-4">Tutor Profile</Link>
             </>
             )}

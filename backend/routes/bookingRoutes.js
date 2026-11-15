@@ -3,7 +3,10 @@ const express = require('express');
 const {
 createBooking,
 getMyBookings,
-cancelBooking
+cancelBooking,
+getTutorBookings, 
+approveBooking,
+declineBooking
 } = require('../controllers/bookingController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -18,6 +21,15 @@ router.get('/my-bookings', protect, getMyBookings);
 
 // Cancel a booking
 router.delete('/:bookingId', protect, cancelBooking);
+
+// Retrieve bookings belonging to the logged-in tutor
+router.get('/tutor-bookings', protect, getTutorBookings);
+
+// Approve a booking
+router.put('/:bookingId/approve', protect, approveBooking);
+
+// Decline a booking
+router.put('/:bookingId/decline', protect, declineBooking);
 
 
 module.exports = router;

@@ -18,7 +18,7 @@ required: true,
 },
 status: {
 type: String,
-enum: ['pending', 'confirmed', 'cancelled'],
+enum: ['pending', 'confirmed', 'declined', 'cancelled'],
 default: 'pending'
 }
 }, {
