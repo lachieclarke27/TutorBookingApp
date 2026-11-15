@@ -142,8 +142,149 @@ const getTutorAvailability = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Update an existing availability slot
+const updateAvailability = async (req, res) => {
+    try {
+        if (req.user.role !== 'tutor') {
+            return res.status(403).json({
+                message: 'Only tutors can update availability'
+            });
+        }
+
+        const { availabilityId } = req.params;
+        const { date, startTime, endTime } = req.body;
+
+        // Find availability belonging to logged-in tutor
+        const availability = await TutorAvailability.findOne({
+            _id: availabilityId,
+            tutor: req.user._id
+        });
+
+        if (!availability) {
+            return res.status(404).json({
+                message: 'Availability not found'
+            });
+        }
+
+        // Check required fields
+        if (!date || !startTime || !endTime) {
+            return res.status(400).json({
+                message: 'Please provide a date, start time and end time'
+            });
+        }
+
+        // Validate date
+        if (
+            !/^\d{4}-\d{2}-\d{2}$/.test(date) ||
+            new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date
+        ) {
+            return res.status(400).json({
+                message: 'Please provide a valid date'
+            });
+        }
+
+        // Prevent past dates
+        const today = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Australia/Brisbane'
+        }).format(new Date());
+
+        if (date < today) {
+            return res.status(400).json({
+                message: 'Availability date cannot be in the past'
+            });
+        }
+
+        // Validate time format
+        const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/;
+
+        if (!timeRegex.test(startTime) || !timeRegex.test(endTime)) {
+            return res.status(400).json({
+                message: 'Please provide valid start and end times'
+            });
+        }
+
+        // Ensure end time is later than start time
+        if (endTime <= startTime) {
+            return res.status(400).json({
+                message: 'End time must be later than start time'
+            });
+        }
+
+        // Check for overlapping availability, excluding current slot
+        const conflictingAvailability = await TutorAvailability.findOne({
+            tutor: req.user._id,
+            date,
+            _id: { $ne: availabilityId },
+            startTime: { $lt: endTime },
+            endTime: { $gt: startTime }
+        });
+
+        if (conflictingAvailability) {
+            return res.status(400).json({
+                message: 'This availability overlaps with an existing slot'
+            });
+        }
+
+        // Update availability
+        availability.date = date;
+        availability.startTime = startTime;
+        availability.endTime = endTime;
+
+        await availability.save();
+
+        res.status(200).json({
+            message: 'Availability updated successfully',
+            availability
+        });
+
+    } catch (error) {
+        res.status(400).json({
+            message: error.message
+        });
+    }
+};
+
+// Delete an existing availability slot
+const deleteAvailability = async (req, res) => {
+    try {
+        if (req.user.role !== 'tutor') {
+            return res.status(403).json({
+                message: 'Only tutors can delete availability'
+            });
+        }
+
+        const { availabilityId } = req.params;
+
+        // Find availability belonging to logged-in tutor
+        const availability = await TutorAvailability.findOne({
+            _id: availabilityId,
+            tutor: req.user._id
+        });
+
+        if (!availability) {
+            return res.status(404).json({
+                message: 'Availability not found'
+            });
+        }
+
+        await availability.deleteOne();
+
+        res.status(200).json({
+            message: 'Availability deleted successfully'
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        });
+    }
+};
+
 module.exports = {
     createAvailability,
     getMyAvailability,
-    getTutorAvailability
+    getTutorAvailability,
+    updateAvailability,
+    deleteAvailability
 };
