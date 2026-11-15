@@ -3,7 +3,9 @@ const express = require('express');
 const {
     createAvailability,
     getMyAvailability,
-    getTutorAvailability
+    getTutorAvailability, 
+    updateAvailability,
+    deleteAvailability
 } = require('../controllers/tutorAvailabilityController');
 
 const { protect } = require('../middleware/authMiddleware');
@@ -18,5 +20,11 @@ router.get('/', protect, getMyAvailability);
 
 // Get availability for a specific tutor
 router.get('/tutor/:tutorId', protect, getTutorAvailability);
+
+// Update availability
+router.put('/:availabilityId', protect, updateAvailability);
+
+// Delete availability
+router.delete('/:availabilityId', protect, deleteAvailability);
 
 module.exports = router;
