@@ -15,11 +15,10 @@ availability: {
 type: mongoose.Schema.Types.ObjectId,
 ref: 'TutorAvailability',
 required: true,
-unique: true
 },
 status: {
 type: String,
-enum: ['pending', 'confirmed', 'cancelled'],
+enum: ['pending', 'confirmed', 'declined', 'cancelled'],
 default: 'pending'
 }
 }, {
