@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/tutor-profile', require('./routes/tutorProfileRoutes'));
+app.use('/api/tutor-availability', require('./routes/tutorAvailabilityRoutes'));
 
 // Export the app object for testing
 if (require.main === module) {
