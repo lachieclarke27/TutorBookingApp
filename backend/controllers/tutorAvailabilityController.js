@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const TutorAvailability = require('../models/TutorAvailability');
+const Booking = require('../models/Booking');
 
 // Create a tutor availability slot
 const createAvailability = async (req, res) => {
@@ -129,17 +130,39 @@ const getTutorAvailability = async (req, res) => {
             });
         }
 
+        // Find all availability belonging to this tutor
         const availability = await TutorAvailability.find({
             tutor: tutorId
-        }).sort({ date: 1, startTime: 1 });
+        }).sort({
+            date: 1,
+            startTime: 1
+        });
+
+        // Find all booked availability IDs
+        const bookings = await Booking.find({
+            availability: {
+                $in: availability.map(slot => slot._id)
+            }
+        }).select('availability');
+
+        const bookedIds = bookings.map(booking =>
+            booking.availability.toString()
+        );
+
+        // Remove already-booked slots
+        const availableSlots = availability.filter(
+            slot => !bookedIds.includes(slot._id.toString())
+        );
 
         res.status(200).json({
-            count: availability.length,
-            availability
+            count: availableSlots.length,
+            availability: availableSlots
         });
 
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({
+            message: error.message
+        });
     }
 };
 
