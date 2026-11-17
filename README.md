@@ -1,26 +1,42 @@
-**Task Manager Application Overview:The task manager application is designed to help users efficiently manage their tasks and responsibilities by providing a user-friendly interface for creating, viewing, updating, and deleting tasks. It includes essential features such as secure user authentication, allowing individuals to sign up and log in to their accounts, as well as profile management to update personal information. With built-in validation such as input field validation and email validation, the application ensures a seamless user experience while enhancing productivity and organization in both personal and professional settings. **
+## Overview
+TutorLink is a tutor booking application that connects students with tutors. Students can browse tutor profiles, view available timeslots, request bookings and manage their bookings. Tutors can create profiles, manage their availability and approve or decline booking requests.
 
-**This apps **contain** the following features:**
+The application includes secure authentication, role-based access and booking management.
 
-* Signup
-* Login
-* Logout
-* Update profile
-* Add tasks
-* View tasks
-* Update tasks
-* Delete tasks
+## Features
 
-**This **app**lication** is**almost **a** precompiled** app**. However, students will develop some features,**such as adding tasks, viewing tasks, updating tasks, and **deleting** tasks**. **Students** will interact with GitHub when they develop the features.**
+**Authentication**
+- Register, login and logout
+- Update account profile
+- Student and tutor roles
+
+**Tutor Features**
+- Create and update tutor profiles
+- Add, edit and delete availability
+- View incoming booking requests
+- Approve or decline bookings
+
+**Student Features**
+- Browse tutors and view availability
+- Request tutor bookings
+- View and cancel bookings
+
+## Technologies
+- React.js
+- Node.js
+- Express.js
+- MongoDB Atlas
+- Mongoose
+- JWT Authentication
+- Axios
 
 ---
 
-**Prerequisite:** Please install the following software and create account in following web tools** **
+## Prerequisites
+Install the following software and create the required accounts:
 
-* **Nodejs [**[https://nodejs.org/en](https://nodejs.org/en)]** **
-* **Git [**[https://git-scm.com/](https://git-scm.com/)]** **
-* **VS code editor** [[https://code.visualstudio.com/](https://code.visualstudio.com/)]** **
-* **MongoDB Account** [[https://account.mongodb.com/account/login](https://account.mongodb.com/account/login)]** - In tutorial, we have also showed how can you create account and database: follow step number 2.**
-* **GitHub Account** [[https://github.com/signup?source=login](https://github.com/signup?source=login)]** **
-
----
+- Node.js: https://nodejs.org/
+- Git: https://git-scm.com/
+- Visual Studio Code: https://code.visualstudio.com/
+- MongoDB Atlas Account: https://www.mongodb.com/atlas
+- GitHub Account: https://github.com/
